@@ -33,8 +33,5 @@ while principal > 0:
 
     print(payment_term, total_paid, principal)
 
-
-print('Total paid', total_paid)
-print('Payment term', payment_term)
-print('Principal', principal)
-print('Final payment', final_payment)
+print(f'The total paid is ${total_paid:0.2f} over {payment_term:0.0f} months')
+print(f'Monthly payments were ${payment} with a final payment of ${final_payment:0.2f}')
