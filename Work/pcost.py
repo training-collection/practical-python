@@ -11,6 +11,7 @@ def portfolio_cost(filename):
     Adjusted to be able to call a fileneame from the terminal
     '''
     total_cost = 0.0
+    
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
         headers = next(rows)
