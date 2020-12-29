@@ -15,14 +15,17 @@ def portfolio_cost(filename):
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
         headers = next(rows)
-        for row in rows:
+
+        for rowno, row in enumerate(rows, start=1):
             #row = line.split(',')
             try:
                 total_cost = total_cost + float(row[1]) * float(row[2])
             except ValueError:
-                print("Could not parse", row)
+                print(f'Row {rowno}: Bad row: {row}')
+
     return total_cost
 
+'''
 if len(sys.argv) == 2:
     filename = sys.argv[1]
 else:
@@ -31,3 +34,4 @@ else:
 cost = portfolio_cost(filename)
   
 print('Total cost:', cost)
+'''

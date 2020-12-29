@@ -50,11 +50,10 @@ def read_prices(filename):
                 print("Could not parse", row)
     return dict
 
-# take list of stocks with origional prices in 'portfolio'
-# inital_value  calculate the inital value of the portfoio with the 'price' there
-# current_value calculate the new value of the portfolio with the read_prices dict
-# dif calculate the gain/los
-
+# 
+# Calculate the gain/loss (ex 2.7)
+#
+'''
 portfolio = read_portfolio('Data/portfolio.csv')
 
 inital_value = 0.0
@@ -72,3 +71,21 @@ profit = final_value - inital_value
 print('Inital value =', inital_value)
 print('Final value =', final_value)
 print('Profit/loss =', profit)
+'''
+
+#
+# Ex 2.9 - collect data for the table
+#
+
+def make_report(portfolio, prices):
+    '''
+    Reads in portfolio and current price list
+    calculates the change in pice
+    returns a list of tuples with Name, Shares, Price Change
+    portfolio and prices are the dics created above
+    '''
+    report = []
+    for s in portfolio:
+        line = (s['name'], s['shares'],s['price'],prices[s['name']]-s['price'])
+        report.append(line)
+    return report
