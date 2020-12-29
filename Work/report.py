@@ -26,10 +26,20 @@ def read_portfolio(filename):
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
         headers = next(rows)
-        dict = {}
-        for row in rows:
-            dict = {'name': row[0], 'shares': int(row[1]), 'price': float(row[2])}
-            portfolio.append(dict)
+        d = {}
+
+        for rowno, row in enumerate(rows, start=1):
+            record = dict(zip(headers, row))
+            try:
+                name = record['name']
+                nshares = int(record['shares'])
+                price = float(record['price']) 
+                d = {'name': name, 'shares': nshares, 'price': price}
+                portfolio.append(d)
+    
+            except ValueError:
+                print(f'Row {rowno}: Bad row: {row}')
+
     return portfolio
 
 # read in csv (string, float) as a dictionary
