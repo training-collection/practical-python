@@ -4,7 +4,7 @@
 
 import csv
 
-def parse_csv(filename, has_headers=False, select=None, types=None):
+def parse_csv(filename, has_headers=False, select=None, types=None, delimiter=','):
     '''
     Parse a csv file into a list of records
     with optional coloumn selection
@@ -22,9 +22,12 @@ def parse_csv(filename, has_headers=False, select=None, types=None):
         types:  A list of types (str, int, float) in the order
                 they appear in the csv file
 
+        delimiter:    Option enables ' ' delimiters to be passed in
+                      otherwise csv is defult
+
     '''
     with open(filename) as f:
-        rows = csv.reader(f)
+        rows = csv.reader(f, delimiter=delimiter)
         
         # Headers if it has any
         headers = next(rows) if has_headers else []
@@ -51,7 +54,7 @@ def parse_csv(filename, has_headers=False, select=None, types=None):
                 try:
                     row = [func(val) for func, val in zip(types, row)]
                 except ValueError:
-                    print(f'Row {rowno}: Type does not match type definition, if Row = 1 check has_header is defined correctly')
+                    print(f'Row {rowno}: Type does not match type definition, if Row = 1 check has_headers is defined correctly')
 
             # Make a dictionary or tuple
             if headers:
@@ -61,6 +64,7 @@ def parse_csv(filename, has_headers=False, select=None, types=None):
             records.append(record)   
  
     return records
+
 
 
 
