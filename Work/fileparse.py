@@ -26,6 +26,9 @@ def parse_csv(filename, has_headers=False, select=None, types=None, delimiter=',
                       otherwise csv is defult
 
     '''
+    if select and not has_headers:
+        raise RuntimeError('select requires has_headers')
+
     with open(filename) as f:
         rows = csv.reader(f, delimiter=delimiter)
         
@@ -38,7 +41,7 @@ def parse_csv(filename, has_headers=False, select=None, types=None, delimiter=',
             indices = [headers.index(colname) for colname in select]
             # Narrow the set of headders for the dictionary output
             headers = select
-        
+
         records = []
         for rowno, row in enumerate(rows, start=1):
             # Skip rows with no data
@@ -53,8 +56,10 @@ def parse_csv(filename, has_headers=False, select=None, types=None, delimiter=',
             if types:
                 try:
                     row = [func(val) for func, val in zip(types, row)]
-                except ValueError:
-                    print(f'Row {rowno}: Type does not match type definition, if Row = 1 check has_headers is defined correctly')
+                except ValueError as e:
+                    print(f'Row {rowno}: Exception message = {e}')
+                    print(f'Row {rowno}: Likely reason =  Type does not match type definition')
+                    print(f'Row {rowno}: If row = 1, check that the  has_headers arg is defined correctly')
 
             # Make a dictionary or tuple
             if headers:
