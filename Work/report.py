@@ -18,16 +18,18 @@ def read_portfolio(filename):
     return portfolio
 '''
 
-# reads the file in as a dictionary
 def read_portfolio(filename):
-    '''reads file as a dictionary'''
+    '''
+    Reads file as a dictionary
+    '''
+    
     portfolio = []
-
+    
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
         headers = next(rows)
         d = {}
-
+    
         for rowno, row in enumerate(rows, start=1):
             record = dict(zip(headers, row))
             try:
@@ -39,19 +41,18 @@ def read_portfolio(filename):
     
             except ValueError:
                 print(f'Row {rowno}: Bad row: {row}')
-
+    
     return portfolio
 
-# read in csv (string, float) as a dictionary
-# handle blank lines
-
 def read_prices(filename):
-    '''reads file in as dictionary and handles NAN'''
+    '''
+    Reads file in as dictionary and handles NAN
+    '''
     
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
         # note that there is no header
-
+    
         dict = {}
         for row in rows:
             try:
@@ -60,32 +61,32 @@ def read_prices(filename):
                 print("Could not parse", row)
     return dict
 
-# 
-# Calculate the gain/loss (ex 2.7)
-#
-'''
-portfolio = read_portfolio('Data/portfolio.csv')
 
-inital_value = 0.0
-for s in portfolio:
-    inital_value += s['shares']*s['price']
+def print_report(portfolio_csv, prices_csv):
+    '''
+    Prints the report
 
-current_prices = read_prices('Data/prices.csv')
+    Previous exercises this was just coded into the
+    end of the file, ex 3.1 changes it into a function
+    '''
+    portfolio = read_portfolio(portfolio_csv)
+    
+    inital_value = 0.0
+    for s in portfolio:
+        inital_value += s['shares']*s['price']
 
-final_value = 0.0
-for s in portfolio:
-    final_value += s['shares']*current_prices[s['name']]
+    current_prices = read_prices(prices_csv)
+    
+    final_value = 0.0
+    for s in portfolio:
+        final_value += s['shares']*current_prices[s['name']]
+    
+    profit = final_value - inital_value
+    
+    print('Inital value =', inital_value)
+    print('Final value =', final_value)
+    print('Profit/loss =', profit)
 
-profit = final_value - inital_value
-
-print('Inital value =', inital_value)
-print('Final value =', final_value)
-print('Profit/loss =', profit)
-'''
-
-#
-# Ex 2.9 - collect data for the table
-#
 
 def make_report(portfolio, prices):
     '''
