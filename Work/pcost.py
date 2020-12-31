@@ -3,6 +3,7 @@
 # Exercise 1.27
 import sys
 import csv
+import report
 
 def portfolio_cost(filename):
     '''
@@ -10,8 +11,8 @@ def portfolio_cost(filename):
     Adusted to use csv package
     Adjusted to be able to call a fileneame from the terminal
     '''
-    total_cost = 0.0
-    
+        
+    '''
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
         headers = next(rows)
@@ -25,8 +26,11 @@ def portfolio_cost(filename):
                 total_cost += nshares * price
             except ValueError:
                 print(f'Row {rowno}: Bad row: {row}')
+    '''
 
-    return total_cost
+    portfolio = report.read_portfolio(filename)
+    
+    return sum([s['shares']*s['price'] for s in portfolio])
 
 '''
 if len(sys.argv) == 2:

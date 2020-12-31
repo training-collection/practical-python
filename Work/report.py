@@ -3,6 +3,7 @@
 # Exercise 2.4
 
 import csv
+import fileparse
 
 '''
 # reads the file in as a tuple
@@ -22,7 +23,8 @@ def read_portfolio(filename):
     '''
     Reads file as a dictionary
     '''
-    
+    portfolio = fileparse.parse_csv(filename, has_headers=True, types=[str,int,float], select=['name','shares','price'])
+    '''
     portfolio = []
     
     with open(filename, 'rt') as f:
@@ -41,14 +43,16 @@ def read_portfolio(filename):
     
             except ValueError:
                 print(f'Row {rowno}: Bad row: {row}')
-    
+    '''
     return portfolio
 
 def read_prices(filename):
     '''
     Reads file in as dictionary and handles NAN
     '''
-    
+    pricelist = fileparse.parse_csv(filename,has_headers=False,types=[str,float])
+    prices = dict(pricelist)
+    '''
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
         # note that there is no header
@@ -59,7 +63,8 @@ def read_prices(filename):
                 dict[row[0]] =  float(row[1])
             except IndexError:
                 print("Could not parse", row)
-    return dict
+    '''
+    return prices
 
 
 def print_report(portfolio_csv, prices_csv):
@@ -69,13 +74,16 @@ def print_report(portfolio_csv, prices_csv):
     Previous exercises this was just coded into the
     end of the file, ex 3.1 changes it into a function
     '''
-    portfolio = read_portfolio(portfolio_csv)
-    
+    #portfolio = read_portfolio(portfolio_csv)
+    portfolio = fileparse.parse_csv(portfolio_csv, has_headers=True, types=[str,int,float], select=['name','shares','price'])
+
     inital_value = 0.0
     for s in portfolio:
         inital_value += s['shares']*s['price']
 
-    current_prices = read_prices(prices_csv)
+    #current_prices = read_prices(prices_csv)
+    pricelist = fileparse.parse_csv(prices_csv,has_headers=False,types=[str,float])
+    current_prices = dict(pricelist)
     
     final_value = 0.0
     for s in portfolio:
