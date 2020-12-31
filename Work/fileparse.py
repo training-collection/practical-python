@@ -1,87 +1,48 @@
 # fileparse.py
-#
-# Exercise 3.3
-
 import csv
 
-def parse_csv(filename, has_headers=False, select=None, types=None, delimiter=',',silence_errors=False):
+def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=',', silence_errors=False):
     '''
-    Parse a csv file into a list of records
-    with optional coloumn selection
-    and type conversion
-    with option to parse files without headers    
-
-    args:
-        has_headers:   True/False
-                       Must pass in a value
-
-        select: A list of desired coloumns based on headder
-                Used only when a header exists
-                Use function csv_headers_firstline to find headders
-    
-        types:  A list of types (str, int, float) in the order
-                they appear in the csv file
-
-        delimiter:    Option enables ' ' delimiters to be passed in
-                      otherwise csv is defult
-
+    Parse a CSV file into a list of records with type conversion.
     '''
     if select and not has_headers:
-        raise RuntimeError('select requires has_headers')
+        raise RuntimeError('select requires column headers')
 
     with open(filename) as f:
         rows = csv.reader(f, delimiter=delimiter)
-        
-        # Headers if it has any
+
+        # Read the file headers (if any)
         headers = next(rows) if has_headers else []
 
-        # If optional coloumn selection is used
+        # If specific columns have been selected, make indices for filtering and set output columns
         if select:
-            # Find indicies of the specified coloumns
-            indices = [headers.index(colname) for colname in select]
-            # Narrow the set of headders for the dictionary output
+            indices = [ headers.index(colname) for colname in select ]
             headers = select
 
         records = []
-        for rowno, row in enumerate(rows, start=1):
-            # Skip rows with no data
-            if not row:
+        for rowno, row in enumerate(rows, 1):
+            if not row:     # Skip rows with no data
                 continue
-           
-            # Filter by selected coloums if selection was used
-            if select:
-                row = [row[index] for index in indices]
 
-            # If optional type selection is used
+            # If specific column indices are selected, pick them out
+            if select:
+                row = [ row[index] for index in indices]
+
+            # Apply type conversion to the row
             if types:
                 try:
                     row = [func(val) for func, val in zip(types, row)]
                 except ValueError as e:
                     if not silence_errors:
-                        print(f'Row {rowno}: Exception message = {e}')
-                        print(f'Row {rowno}: Likely reason =  Type does not match type definition')
-                        print(f'Row {rowno}: If row = 1, check that the  has_headers arg is defined correctly')
+                        print(f"Row {rowno}: Couldn't convert {row}")
+                        print(f"Row {rowno}: Reason {e}")
                     continue
 
-            # Make a dictionary or tuple
+            # Make a dictionary or a tuple
             if headers:
                 record = dict(zip(headers, row))
             else:
                 record = tuple(row)
-            records.append(record)   
- 
-    return records
+            records.append(record)
 
-
-
-
-def csv_header_firstrow(filename):
-    '''
-    Call header and first row of data in csv as tuple
-    '''
-    with open(filename) as f:
-        rows = csv.reader(f)
-        headers = next(rows)
-        first_row = next(rows)    
-
-    return headers, first_row
+        return records

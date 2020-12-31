@@ -1,87 +1,56 @@
 # report.py
-#
-# Exercise 2.4
 
-import csv
 import fileparse
 
-'''
-# reads the file in as a tuple
-def read_portfolio(filename):
-    portfolio = []
-
-    with open(filename, 'rt') as f:
-        rows = csv.reader(f)
-        headers = next(rows)
-        for row in rows:
-            holiding = (row[0], int(row[1]), float(row[2]))
-            portfolio.append(holiding)
-    return portfolio
-'''
-
 def read_portfolio(filename):
     '''
-    Reads file as a dictionary
+    Read a stock portfolio file into a list of dictionaries with keys
+    name, shares, and price.
     '''
-    portfolio = fileparse.parse_csv(
-        filename, 
-        has_headers=True, 
-        types=[str,int,float], 
-        select=['name','shares','price']
-        )
-    return portfolio
+    return fileparse.parse_csv(filename, select=['name','shares','price'], types=[str,int,float])
 
 def read_prices(filename):
     '''
-    Reads file in as dictionary and handles NAN
+    Read a CSV file of price data into a dict mapping names to prices.
     '''
-    pricelist = fileparse.parse_csv(
-        filename,
-        has_headers=False,
-        types=[str,float]
-        )
-    prices = dict(pricelist)
-    return prices
+    return dict(fileparse.parse_csv(filename,types=[str,float], has_headers=False))
 
-
-def print_report(portfolio_csv, prices_csv):
+def make_report_data(portfolio,prices):
     '''
-    Prints the report
-
-    Previous exercises this was just coded into the
-    end of the file, ex 3.1 changes it into a function
+    Make a list of (name, shares, price, change) tuples given a portfolio list
+    and prices dictionary.
     '''
-    #portfolio = read_portfolio(portfolio_csv)
-    portfolio = fileparse.parse_csv(portfolio_csv, has_headers=True, types=[str,int,float], select=['name','shares','price'])
+    rows = []
+    for stock in portfolio:
+        current_price = prices[stock['name']]
+        change = current_price - stock['price']
+        summary = (stock['name'], stock['shares'], current_price, change)
+        rows.append(summary)
+    return rows
 
-    inital_value = 0.0
-    for s in portfolio:
-        inital_value += s['shares']*s['price']
-
-    #current_prices = read_prices(prices_csv)
-    pricelist = fileparse.parse_csv(prices_csv,has_headers=False,types=[str,float])
-    current_prices = dict(pricelist)
-    
-    final_value = 0.0
-    for s in portfolio:
-        final_value += s['shares']*current_prices[s['name']]
-    
-    profit = final_value - inital_value
-    
-    print('Inital value =', inital_value)
-    print('Final value =', final_value)
-    print('Profit/loss =', profit)
-
-
-def make_report(portfolio, prices):
+def print_report(reportdata):
     '''
-    Reads in portfolio and current price list
-    calculates the change in pice
-    returns a list of tuples with Name, Shares, Price Change
-    portfolio and prices are the dics created above
+    Print a nicely formated table from a list of (name, shares, price, change) tuples.
     '''
-    report = []
-    for s in portfolio:
-        line = (s['name'], s['shares'],s['price'],prices[s['name']]-s['price'])
-        report.append(line)
-    return report
+    headers = ('Name','Shares','Price','Change')
+    print('%10s %10s %10s %10s' % headers)
+    print(('-'*10 + ' ')*len(headers))
+    for row in reportdata:
+        print('%10s %10d %10.2f %10.2f' % row)
+
+def portfolio_report(portfoliofile,pricefile):        
+    '''
+    Make a stock report given portfolio and price data files.
+    '''
+    # Read data files 
+    portfolio = read_portfolio(portfoliofile)
+    prices = read_prices(pricefile)
+
+    # Create the report data
+    report = make_report_data(portfolio, prices)
+
+    # Print it out
+    print_report(report)
+
+portfolio_report('../../Work/Data/portfolio.csv',
+                 '../../Work/Data/prices.csv')
