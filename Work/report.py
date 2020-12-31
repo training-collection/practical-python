@@ -23,47 +23,24 @@ def read_portfolio(filename):
     '''
     Reads file as a dictionary
     '''
-    portfolio = fileparse.parse_csv(filename, has_headers=True, types=[str,int,float], select=['name','shares','price'])
-    '''
-    portfolio = []
-    
-    with open(filename, 'rt') as f:
-        rows = csv.reader(f)
-        headers = next(rows)
-        d = {}
-    
-        for rowno, row in enumerate(rows, start=1):
-            record = dict(zip(headers, row))
-            try:
-                name = record['name']
-                nshares = int(record['shares'])
-                price = float(record['price']) 
-                d = {'name': name, 'shares': nshares, 'price': price}
-                portfolio.append(d)
-    
-            except ValueError:
-                print(f'Row {rowno}: Bad row: {row}')
-    '''
+    portfolio = fileparse.parse_csv(
+        filename, 
+        has_headers=True, 
+        types=[str,int,float], 
+        select=['name','shares','price']
+        )
     return portfolio
 
 def read_prices(filename):
     '''
     Reads file in as dictionary and handles NAN
     '''
-    pricelist = fileparse.parse_csv(filename,has_headers=False,types=[str,float])
+    pricelist = fileparse.parse_csv(
+        filename,
+        has_headers=False,
+        types=[str,float]
+        )
     prices = dict(pricelist)
-    '''
-    with open(filename, 'rt') as f:
-        rows = csv.reader(f)
-        # note that there is no header
-    
-        dict = {}
-        for row in rows:
-            try:
-                dict[row[0]] =  float(row[1])
-            except IndexError:
-                print("Could not parse", row)
-    '''
     return prices
 
 
