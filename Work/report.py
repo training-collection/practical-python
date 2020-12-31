@@ -52,5 +52,15 @@ def portfolio_report(portfoliofile,pricefile):
     # Print it out
     print_report(report)
 
-portfolio_report('../../Work/Data/portfolio.csv',
-                 '../../Work/Data/prices.csv')
+#portfolio_report('Data/portfolio.csv',
+#                 'Data/prices.csv')
+
+# main function
+def main(args):
+    if len(args) != 3:
+        raise SystemExit('Usage: %s portfile pricefile' % args[0])
+    portfolio_report(args[1], args[2])
+
+# by convection, the first argument position into main is the executable that's being run
+# ie. for this main the executable is report.py
+# the other two args are the arguments that will be passed into the function portfolio_report
