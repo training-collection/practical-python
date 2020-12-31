@@ -4,7 +4,7 @@
 
 import csv
 
-def parse_csv(filename, has_headers=False, select=None, types=None, delimiter=','):
+def parse_csv(filename, has_headers=False, select=None, types=None, delimiter=',',silence_errors=False):
     '''
     Parse a csv file into a list of records
     with optional coloumn selection
@@ -57,9 +57,11 @@ def parse_csv(filename, has_headers=False, select=None, types=None, delimiter=',
                 try:
                     row = [func(val) for func, val in zip(types, row)]
                 except ValueError as e:
-                    print(f'Row {rowno}: Exception message = {e}')
-                    print(f'Row {rowno}: Likely reason =  Type does not match type definition')
-                    print(f'Row {rowno}: If row = 1, check that the  has_headers arg is defined correctly')
+                    if not silence_errors:
+                        print(f'Row {rowno}: Exception message = {e}')
+                        print(f'Row {rowno}: Likely reason =  Type does not match type definition')
+                        print(f'Row {rowno}: If row = 1, check that the  has_headers arg is defined correctly')
+                    continue
 
             # Make a dictionary or tuple
             if headers:
