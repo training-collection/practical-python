@@ -64,3 +64,7 @@ def main(args):
 # by convection, the first argument position into main is the executable that's being run
 # ie. for this main the executable is report.py
 # the other two args are the arguments that will be passed into the function portfolio_report
+
+if __name__ == '__main__':
+    import sys
+    main(sys.argv)
