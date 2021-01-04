@@ -49,9 +49,10 @@ def print_report(reportdata, formatter):
     for row in reportdata:
         print('%10s %10d %10.2f %10.2f' % row)'''
 
-def portfolio_report(portfoliofile, pricefile):        
+def portfolio_report(portfoliofile, pricefile, fmt):        
     '''
-    Make a stock report given portfolio and price data files.
+    Make a stock report given portfolio and price data files
+    Where fmt is csv txt or html
     '''
     # Read data files 
     portfolio = read_portfolio(portfoliofile)
@@ -61,7 +62,7 @@ def portfolio_report(portfoliofile, pricefile):
     report = make_report_data(portfolio, prices)
 
     # Print it out
-    formatter = tableformat.HTMLTableFormatter()
+    formatter = tableformat.create_formatter(fmt)
     print_report(report, formatter)
 
 #portfolio_report('Data/portfolio.csv',
@@ -69,9 +70,9 @@ def portfolio_report(portfoliofile, pricefile):
 
 # main function
 def main(args):
-    if len(args) != 3:
+    if len(args) != 4:
         raise SystemExit('Usage: %s portfile pricefile' % args[0])
-    portfolio_report(args[1], args[2])
+    portfolio_report(args[1], args[2], args[3])
 
 # by convection, the first argument position into main is the executable that's being run
 # ie. for this main the executable is report.py
