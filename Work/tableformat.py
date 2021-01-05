@@ -54,3 +54,15 @@ def create_formatter(name):
         return HTMLTableFormatter()
     else:
         raise RuntimeError(f'Unknown format {name}')
+
+def print_table(objects, columns, formatter):
+    ''' prints a formatted table to selected columns
+
+    Args:   portfolio: output of report.read_portfolio('csv')
+            columns: list of columns to appear in table
+            formatter: output of create_formatter('xx') function in table_format
+    '''
+    formatter.headings(columns)
+    for obj in objects:
+        rowdata = [ str(getattr(obj, name)) for name in columns ]
+        formatter.row(rowdata)
